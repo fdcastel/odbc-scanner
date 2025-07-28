@@ -37,8 +37,8 @@ set(CMAKE_CXX_STANDARD "11" CACHE STRING "C++ standard to enforce")
 
 # Create Extension library
 set(EXTENSION_SOURCES
-        src/capi_odbc_scanner.c
-        src/odbc_query.cpp
+    src/capi_odbc_scanner.c
+    src/odbc_query.cpp
 )
 
 if (DUCKDB_WASM_EXTENSION)
@@ -60,8 +60,16 @@ target_include_directories(${EXTENSION_NAME} PRIVATE
     src/include
 )
 
+target_compile_options(${EXTENSION_NAME} PRIVATE
+    -Wall
+    -Werror
+    -Wextra
+)
+    
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    target_compile_options(${EXTENSION_NAME} PRIVATE "-O0")
+    target_compile_options(${EXTENSION_NAME} PRIVATE
+        -O0
+    )
 endif ()
 
 target_link_libraries(${EXTENSION_NAME} PRIVATE

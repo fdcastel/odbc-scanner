@@ -39,3 +39,6 @@ clean_all: clean clean_configure
 
 format:
 	python ./resources/scripts/format.py
+
+format-check:
+	python ./resources/scripts/format.py --check

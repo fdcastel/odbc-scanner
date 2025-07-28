@@ -18,7 +18,7 @@ struct QueryContext {
 	bool finished = false;
 
 	QueryContext() {
-		SQLRETURN ret = SQLAllocHandle(SQL_HANDLE_ENV, nullptr, &env);
+		SQLAllocHandle(SQL_HANDLE_ENV, nullptr, &env);
 		SQLSetEnvAttr(env, SQL_ATTR_ODBC_VERSION, reinterpret_cast<SQLPOINTER>(static_cast<uintptr_t>(SQL_OV_ODBC3)),
 		              0);
 		SQLAllocHandle(SQL_HANDLE_DBC, env, &dbc);
