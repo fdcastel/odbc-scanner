@@ -1,3 +1,5 @@
+#include <cstring>
+
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 #include "duckdb.h"
@@ -29,9 +31,9 @@ TEST_CASE("Scanner basic test", "[basic]") {
 	        DuckDBSuccess);
 	REQUIRE(duckdb_value_int64(&result, 0, 0) == 42);
 
-	REQUIRE(duckdb_query(connection, "SELECT * FROM odbc_query(getvariable('conn'), 'SELECT 43')", &result) ==
+	REQUIRE(duckdb_query(connection, "SELECT * FROM odbc_query(getvariable('conn'), 'SELECT ''foo''')", &result) ==
 	        DuckDBSuccess);
-	REQUIRE(duckdb_value_int64(&result, 0, 0) == 43);
+	REQUIRE(std::strcmp(duckdb_value_varchar(&result, 0, 0), "foo") == 0);
 
 	REQUIRE(duckdb_query(connection, "SELECT odbc_close(getvariable('conn'))", &result) == DuckDBSuccess);
 

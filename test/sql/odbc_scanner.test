@@ -26,5 +26,11 @@ SELECT * FROM odbc_query(getvariable('conn'), 'SELECT unnest([41, 42, 43])')
 42
 43
 
+# todo: columns
+query II
+SELECT * FROM odbc_query(getvariable('conn'), 'SELECT ''foo'', 42')
+----
+foo	42
+
 statement ok
 SELECT odbc_close(getvariable('conn'))

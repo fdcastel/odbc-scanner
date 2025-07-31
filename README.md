@@ -4,7 +4,7 @@ ODBC Scanner extension that links with the **C Extension API** of DuckDB.
 
 ## Usage example
 
-```
+```sql
 LOAD odbc_scanner;
 
 SET VARIABLE postgres_conn = odbc_connect('DSN=postgres1;');
