@@ -1027,10 +1027,10 @@ jobs:
           FIREBIRD_PASSWORD: testpass
           FIREBIRD_DATABASE_DEFAULT_CHARSET: UTF8
         options: >-
-          --health-cmd "echo 'SELECT 1 FROM RDB\$DATABASE;' | isql -user testuser -password testpass localhost:/var/lib/firebird/data/test.fdb"
+          --health-cmd "nc -z localhost 3050 || exit 1"
           --health-interval 10s
           --health-timeout 5s
-          --health-retries 5
+          --health-retries 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
