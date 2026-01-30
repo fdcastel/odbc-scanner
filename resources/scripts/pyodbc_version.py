@@ -73,8 +73,6 @@ if __name__ == "__main__":
     run_version()
   elif "MSSQL" == args.dbms:
     run_mssql()
-  elif "PostgreSQL" == args.dbms:
-    run_postgres()
   elif "Oracle" == args.dbms:
     run_oracle()
   elif "DB2" == args.dbms:
