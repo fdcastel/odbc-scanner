@@ -1011,7 +1011,7 @@ jobs:
       - name: Firebird Server and ODBC Driver
         shell: pwsh
         run: |
-          choco install firebird -y
+          choco install firebird -y --source 'https://feeds.dw.net.br' --version 5.0.3.1
           choco install firebird-odbc -y --version 3.0.1.21
 
           ./configure/venv/Scripts/python.exe -m pip install pyodbc
