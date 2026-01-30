@@ -1,5 +1,7 @@
 # DuckDB ODBC Scanner
 
+> *IMPORTANT*: This is a fork of official project at https://github.com/duckdb/odbc-scanner.
+
 ODBC Scanner extension allows to connect to other databases (using their ODBC drivers) and run queries with [odbc_query](#odbc_query) table function.
 
 Outline:
