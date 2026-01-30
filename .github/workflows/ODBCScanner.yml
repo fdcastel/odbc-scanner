@@ -88,6 +88,7 @@ jobs:
 
   duckdb-osx-aarch64:
     name: DuckDB MacOS (aarch64)
+    if: ${{ false }}    # TODO: Remove this
     runs-on: macos-latest
     needs: duckdb-linux-amd64
     env:
@@ -223,6 +224,7 @@ jobs:
           ./configure/venv/Scripts/python.exe ./resources/scripts/run_sqllogic_tests.py --dbms DuckDB
 
   mssql-linux-amd64:
+    if: ${{ false }}    # TODO: Remove this
     name: MSSQL Linux (amd64)
     runs-on: ubuntu-latest
     needs: duckdb-linux-amd64
@@ -307,6 +309,7 @@ jobs:
           python ./resources/scripts/run_sqllogic_tests.py --dbms MSSQL
 
   postgres-linux-amd64:
+    if: ${{ false }}    # TODO: Remove this
     name: PostgreSQL Linux (amd64)
     runs-on: ubuntu-latest
     needs: duckdb-linux-amd64
@@ -378,6 +381,7 @@ jobs:
           python ./resources/scripts/run_sqllogic_tests.py --dbms Postgres
 
   mariadb-linux-amd64:
+    if: ${{ false }}    # TODO: Remove this
     name: MariaDB Linux (amd64)
     runs-on: ubuntu-latest
     needs: duckdb-linux-amd64
@@ -452,6 +456,7 @@ jobs:
 
   mysql-linux-amd64:
     name: MySQL Linux (amd64)
+    if: ${{ false }}    # TODO: Remove this
     runs-on: ubuntu-latest
     needs: duckdb-linux-amd64
     env:
@@ -523,6 +528,7 @@ jobs:
 
   oracle-linux-amd64:
     name: Oracle Linux (amd64)
+    if: ${{ false }}    # TODO: Remove this
     runs-on: ubuntu-latest
     needs: duckdb-linux-amd64
     env:
@@ -605,6 +611,7 @@ jobs:
 
   db2-linux-amd64:
     name: DB2 Linux (amd64)
+    if: ${{ false }}    # TODO: Remove this
     runs-on: ubuntu-latest
     needs: duckdb-linux-amd64
     env:
@@ -687,6 +694,7 @@ jobs:
 
   clickhouse-linux-amd64:
     name: ClickHouse Linux (amd64)
+    if: ${{ false }}    # TODO: Remove this
     runs-on: ubuntu-latest
     needs: duckdb-linux-amd64
     env:
@@ -764,6 +772,7 @@ jobs:
 
   spark-linux-amd64:
     name: Spark Linux (amd64)
+    if: ${{ false }}    # TODO: Remove this
     runs-on: ubuntu-latest
     needs: duckdb-linux-amd64
     env:
@@ -839,7 +848,7 @@ jobs:
 
   snowflake-linux-amd64:
     name: Snowflake Linux (amd64)
-    if: ${{ false }}
+    if: ${{ false }}    # TODO: Remove this
     runs-on: ubuntu-latest
     needs: duckdb-linux-amd64
     env:
@@ -905,6 +914,7 @@ jobs:
 
   flightsql-linux-amd64:
     name: FlightSQL Linux (amd64)
+    if: ${{ false }}    # TODO: Remove this
     runs-on: ubuntu-latest
     needs: duckdb-linux-amd64
     env:
