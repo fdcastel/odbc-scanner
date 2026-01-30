@@ -1,0 +1,71 @@
+# name: test/sql/firebird/12_int128.test
+# description: test for Firebird INT128 type (Firebird 4.0+)
+# group: [firebird_int128]
+
+require odbc_scanner
+
+require-env FIREBIRD_AVAILABLE
+
+statement ok
+SET VARIABLE conn = odbc_connect('ODBCSCANNER_DEBUG_CONN_STRING_ENV_VAR=ODBC_CONN_STRING')
+
+# Basic INT128 test
+query I
+SELECT * FROM odbc_query(getvariable('conn'), 'SELECT CAST(123456789012345678901234567890 AS INT128) FROM rdb$database')
+----
+123456789012345678901234567890
+
+# Large positive value
+query I
+SELECT * FROM odbc_query(getvariable('conn'), 'SELECT CAST(170141183460469231731687303715884105727 AS INT128) FROM rdb$database')
+----
+170141183460469231731687303715884105727
+
+# Large negative value
+query I
+SELECT * FROM odbc_query(getvariable('conn'), 'SELECT CAST(-170141183460469231731687303715884105728 AS INT128) FROM rdb$database')
+----
+-170141183460469231731687303715884105728
+
+# Zero value
+query I
+SELECT * FROM odbc_query(getvariable('conn'), 'SELECT CAST(0 AS INT128) FROM rdb$database')
+----
+0
+
+# NULL value
+query I
+SELECT * FROM odbc_query(getvariable('conn'), 'SELECT CAST(NULL AS INT128) FROM rdb$database')
+----
+NULL
+
+# Arithmetic operations
+query I
+SELECT * FROM odbc_query(getvariable('conn'), 'SELECT CAST(100000000000000000000 AS INT128) * 2 FROM rdb$database')
+----
+200000000000000000000
+
+# With parameters
+query I
+SELECT * FROM odbc_query(getvariable('conn'), 
+  'SELECT CAST(? AS INT128) FROM rdb$database',
+  params=row(99999999999999999999::BIGINT))
+----
+99999999999999999999
+
+# Hexadecimal format (17-32 hex digits for INT128)
+query I
+SELECT * FROM odbc_query(getvariable('conn'), 'SELECT 0x0123456789ABCDEF0123456789ABCDEF FROM rdb$database')
+----
+1512366075204170861321388185633029871
+
+# Verify column type
+query I
+SELECT column_type from (
+  DESCRIBE SELECT * FROM odbc_query(getvariable('conn'), 'SELECT CAST(123 AS INT128) FROM rdb$database')
+)
+----
+HUGEINT
+
+statement ok
+SELECT odbc_close(getvariable('conn'))
