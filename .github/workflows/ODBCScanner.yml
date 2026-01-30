@@ -1051,13 +1051,18 @@ jobs:
 
       - name: Firebird ODBC Lib
         run: |
-          sudo apt-get install -y -q -o=Dpkg::Use-Pty=0 \
-            firebird3.0-server \
-            firebird-dev \
-            odbc-firebird
-          cat /etc/odbcinst.ini
+          # Download Firebird ODBC driver from official release
+          curl --no-progress-meter -LO https://github.com/user-attachments/files/24675550/linux_libs.zip
+          unzip -q linux_libs.zip
+          # Install the driver
+          sudo mkdir -p /usr/lib/x86_64-linux-gnu/odbc
+          sudo cp Release_x86_64/libOdbcFb.so /usr/lib/x86_64-linux-gnu/odbc/libOdbcFb.so
+          sudo chmod 755 /usr/lib/x86_64-linux-gnu/odbc/libOdbcFb.so
+          # Verify the driver
           ldd "${FIREBIRD_ODBC_LIB_PATH}"
+          # Register the driver with ODBC
           ./resources/scripts/write_odbcinst_ini.sh Firebird "${FIREBIRD_ODBC_LIB_PATH}"
+          # Test connection
           python ./resources/scripts/pyodbc_version.py --dbms Firebird --conn-str "${ODBC_CONN_STRING}"
 
       - name: DuckDB CAPI Lib
