@@ -79,7 +79,7 @@ jobs:
 
       - name: SQL Tests
         run: |
-          python ./resources/scripts/run_sqllogic_tests.py --dbms DuckDB
+          ./configure/venv/bin/python ./resources/scripts/run_sqllogic_tests.py --dbms DuckDB
 
       - name: Save Cache
         uses: actions/cache/save@v4
@@ -1084,4 +1084,4 @@ jobs:
 
       - name: SQL Tests
         run: |
-          python ./resources/scripts/run_sqllogic_tests.py --dbms Firebird
+          ./configure/venv/bin/python ./resources/scripts/run_sqllogic_tests.py --dbms Firebird
