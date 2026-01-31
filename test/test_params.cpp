@@ -103,7 +103,8 @@ SELECT * FROM odbc_query(
 }
 
 TEST_CASE("Params query with multiple params including NULL", group_name) {
-	if (DBMSConfigured("Oracle") || DBMSConfigured("DB2") || DBMSConfigured("Firebird") || DBMSConfigured("FlightSQL")) {
+	if (DBMSConfigured("Oracle") || DBMSConfigured("DB2") || DBMSConfigured("Firebird") ||
+	    DBMSConfigured("FlightSQL")) {
 		return;
 	}
 	ScannerConn sc;
