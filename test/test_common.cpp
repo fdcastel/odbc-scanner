@@ -329,6 +329,10 @@ std::string CastAsDateSQL(const std::string &value_in, const std::string &alias)
 }
 
 std::string CastAsDecimalSQL(const std::string &value, uint8_t precision, uint8_t scale, const std::string &alias) {
+	// Firebird has a maximum precision of 18 for DECIMAL
+	if (DBMSConfigured("Firebird") && precision > 18) {
+		precision = 18;
+	}
 	std::string type_name = "DECIMAL(" + std::to_string(precision) + ", " + std::to_string(scale) + ")";
 	std::string postfix = "";
 	if (DBMSConfigured("ClickHouse")) {

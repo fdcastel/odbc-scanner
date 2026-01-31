@@ -25,25 +25,40 @@ SELECT * FROM odbc_query(
 TEST_CASE("Basic query with multiple rows and columns", group_name) {
 	ScannerConn sc;
 	Result res;
-	duckdb_state st = duckdb_query(sc.conn,
-	                               (R"(
+	std::string query;
+	if (DBMSConfigured("Firebird")) {
+		// Firebird doesn't allow semicolons in UNION ALL subqueries
+		query = R"(
+SELECT * FROM odbc_query(
+	getvariable('conn'),
+	'
+		SELECT a.col1, a.col2 FROM (
+			SELECT ''foo'' AS col1, CAST(41 AS BIGINT) AS col2 FROM RDB$DATABASE
+			UNION ALL
+			SELECT ''bar'' AS col1, CAST(42 AS BIGINT) AS col2 FROM RDB$DATABASE
+		) a
+		ORDER BY a.col2
+	')
+)";
+	} else {
+		query = R"(
 SELECT * FROM odbc_query(
 	getvariable('conn'),
 	'
 		SELECT a.col1, a.col2 FROM (
 			SELECT ''foo'' AS col1, )" +
-	                                CastAsBigintSQL("41", "AS col2") +
-	                                R"(
+		         CastAsBigintSQL("41", "AS col2") +
+		         R"(
 			UNION ALL
 			SELECT ''bar'' AS col1, )" +
-	                                CastAsBigintSQL("42", "AS col2") +
-	                                R"(
+		         CastAsBigintSQL("42", "AS col2") +
+		         R"(
 		) a
 		ORDER BY a.col2
 	')
-)")
-	                                   .c_str(),
-	                               res.Get());
+)";
+	}
+	duckdb_state st = duckdb_query(sc.conn, query.c_str(), res.Get());
 	REQUIRE(QuerySuccess(res.Get(), st));
 	REQUIRE(res.NextChunk());
 	REQUIRE(res.Value<std::string>(0, 0) == "foo");

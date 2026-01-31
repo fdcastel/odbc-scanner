@@ -33,7 +33,7 @@ TEST_CASE("Long string query", group_name) {
 	} else if (DBMSConfigured("DB2")) {
 		cast = "CAST(? AS VARCHAR(20000)) FROM sysibm.sysdummy1";
 	} else if (DBMSConfigured("Firebird")) {
-		cast = "CAST(? AS VARCHAR(20000)) FROM RDB$DATABASE;";
+		cast = "CAST(? AS VARCHAR(8191)) FROM RDB$DATABASE;";
 	} else if (DBMSConfigured("FlightSQL")) {
 		return;
 	}
