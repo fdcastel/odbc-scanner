@@ -85,7 +85,12 @@ void TypeSpecific::BindOdbcParam<std::string>(QueryContext &ctx, ScannerValue &p
 static std::pair<std::string, bool> FetchTail(QueryContext &ctx, SQLSMALLINT col_idx, std::vector<SQLWCHAR> &buf,
                                               SQLLEN len_bytes) {
 	if (len_bytes % sizeof(SQLWCHAR) != 0) {
-		len_bytes -= 1;
+		if (ctx.quirks.varchar_wchar_length_quirk) {
+			// Firebird quirk: round up instead of down for odd byte lengths
+			len_bytes += 1;
+		} else {
+			len_bytes -= 1;
+		}
 	}
 	size_t len = static_cast<size_t>(len_bytes / sizeof(SQLWCHAR));
 
@@ -106,7 +111,12 @@ static std::pair<std::string, bool> FetchTail(QueryContext &ctx, SQLSMALLINT col
 	}
 
 	if (len_tail_bytes % sizeof(SQLWCHAR) != 0) {
-		len_tail_bytes -= 1;
+		if (ctx.quirks.varchar_wchar_length_quirk) {
+			// Firebird quirk: round up instead of down for odd byte lengths
+			len_tail_bytes += 1;
+		} else {
+			len_tail_bytes -= 1;
+		}
 	}
 	size_t len_tail = static_cast<size_t>(len_tail_bytes / sizeof(SQLWCHAR));
 	size_t len_tail_expected = len - head_size;
@@ -150,7 +160,12 @@ static std::pair<std::string, bool> FetchMultiReads(QueryContext &ctx, SQLSMALLI
 
 		if (ret == SQL_SUCCESS || diag_code != trunc_diag_code) {
 			if (len_bytes % sizeof(SQLWCHAR) != 0) {
-				len_bytes -= 1;
+				if (ctx.quirks.varchar_wchar_length_quirk) {
+					// Firebird quirk: round up instead of down for odd byte lengths
+					len_bytes += 1;
+				} else {
+					len_bytes -= 1;
+				}
 			}
 
 			size_t buf_size_full = prev_written + (len_bytes / sizeof(SQLWCHAR));
@@ -163,7 +178,12 @@ static std::pair<std::string, bool> FetchMultiReads(QueryContext &ctx, SQLSMALLI
 static std::pair<std::string, bool> FetchSinglePart(QueryContext &ctx, SQLSMALLINT col_idx, std::vector<SQLWCHAR> &buf,
                                                     SQLLEN len_bytes) {
 	if (len_bytes % sizeof(SQLWCHAR) != 0) {
-		len_bytes -= 1;
+		if (ctx.quirks.varchar_wchar_length_quirk) {
+			// Firebird quirk: round up instead of down for odd byte lengths
+			len_bytes += 1;
+		} else {
+			len_bytes -= 1;
+		}
 	}
 	size_t len = static_cast<size_t>(len_bytes / sizeof(SQLWCHAR));
 	buf.resize(len + 1);
@@ -179,7 +199,12 @@ static std::pair<std::string, bool> FetchSinglePart(QueryContext &ctx, SQLSMALLI
 	}
 
 	if (len_read_bytes % sizeof(SQLWCHAR) != 0) {
-		len_read_bytes -= 1;
+		if (ctx.quirks.varchar_wchar_length_quirk) {
+			// Firebird quirk: round up instead of down for odd byte lengths
+			len_read_bytes += 1;
+		} else {
+			len_read_bytes -= 1;
+		}
 	}
 	if (len_read_bytes != len_bytes) {
 		throw ScannerException(
@@ -221,7 +246,12 @@ static std::pair<std::string, bool> FetchInternal(QueryContext &ctx, SQLSMALLINT
 		}
 
 		if (len_bytes % sizeof(SQLWCHAR) != 0) {
-			len_bytes -= 1;
+			if (ctx.quirks.varchar_wchar_length_quirk) {
+				// Firebird quirk: round up instead of down for odd byte lengths
+				len_bytes += 1;
+			} else {
+				len_bytes -= 1;
+			}
 		}
 
 		size_t len = len_bytes / sizeof(SQLWCHAR);

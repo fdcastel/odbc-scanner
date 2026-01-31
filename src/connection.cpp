@@ -34,6 +34,8 @@ static DbmsDriver ResolveDbmsDriver(const std::string &dbms_name, const std::str
 		return DbmsDriver::CLICKHOUSE;
 	} else if (driver_name == "Arrow Flight ODBC Driver") {
 		return DbmsDriver::FLIGTHSQL;
+	} else if (dbms_name.rfind("Firebird", 0) == 0 || driver_name.rfind("Firebird", 0) == 0) {
+		return DbmsDriver::FIREBIRD;
 	} else {
 		return DbmsDriver::GENERIC;
 	}

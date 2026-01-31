@@ -27,6 +27,7 @@ struct DbmsQuirks {
 	bool var_len_data_single_part = false;
 	uint32_t var_len_params_long_threshold_bytes = 4000;
 	bool enable_columns_binding = false;
+	bool varchar_wchar_length_quirk = false;
 
 	explicit DbmsQuirks(OdbcConnection &conn, const std::map<std::string, ValuePtr> &user_quirks);
 

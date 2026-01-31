@@ -57,6 +57,9 @@ DbmsQuirks::DbmsQuirks(OdbcConnection &conn, const std::map<std::string, ValuePt
 	case DbmsDriver::FLIGTHSQL:
 		this->decimal_columns_as_chars = true;
 		break;
+	case DbmsDriver::FIREBIRD:
+		this->varchar_wchar_length_quirk = true;
+		break;
 
 	case DbmsDriver::GENERIC:
 		break;
@@ -106,6 +109,8 @@ DbmsQuirks::DbmsQuirks(OdbcConnection &conn, const std::map<std::string, ValuePt
 			this->var_len_params_long_threshold_bytes = num;
 		} else if (en.first == "enable_columns_binding") {
 			this->enable_columns_binding = duckdb_get_bool(val.get());
+		} else if (en.first == "varchar_wchar_length_quirk") {
+			this->varchar_wchar_length_quirk = duckdb_get_bool(val.get());
 		} else {
 			throw ScannerException("Unsupported user option: '" + en.first + "'");
 		}
@@ -129,6 +134,7 @@ const std::vector<std::string> DbmsQuirks::AllNames() {
 	res.emplace_back("var_len_data_single_part");
 	res.emplace_back("var_len_params_long_threshold_bytes");
 	res.emplace_back("enable_columns_binding");
+	res.emplace_back("varchar_wchar_length_quirk");
 	return res;
 }
 
