@@ -1018,6 +1018,25 @@ jobs:
         run: |
           make configure
 
+      - name: Firebird Server and ODBC Driver
+        shell: pwsh
+        run: |
+          choco install firebird -y --source 'https://feeds.dw.net.br' --version 5.0.3.1
+          choco install firebird-odbc -y --version 3.0.1.21
+
+          ./configure/venv/Scripts/python.exe -m pip install pyodbc
+
+          $isql = 'C:/Program Files/Firebird/Firebird_5_0/isql.exe'
+
+          # Initialize SYSDBA password
+          "CREATE OR ALTER USER SYSDBA PASSWORD 'masterkey' USING PLUGIN Srp; EXIT;" | & $isql -b -user SYSDBA security.db
+
+          # Create a test database
+          mkdir C:/tmp > $null
+          "CREATE DATABASE 'localhost:C:/tmp/test.fdb' user 'SYSDBA' password 'masterkey'; EXIT;" | & $isql -b -q
+
+          ./configure/venv/Scripts/python.exe ./resources/scripts/pyodbc_version.py --dbms Firebird --conn-str $env:ODBC_CONN_STRING
+
       - name: Restore DuckDB CAPI Lib Cache
         id: cache-duckdb-capi
         uses: actions/cache@v4
@@ -1037,25 +1056,6 @@ jobs:
           unzip -q libduckdb-windows-amd64.zip
           ls -laR
           popd
-
-      - name: Firebird Server and ODBC Driver
-        shell: pwsh
-        run: |
-          choco install firebird -y --source 'https://feeds.dw.net.br' --version 5.0.3.1
-          choco install firebird-odbc -y --version 3.0.1.21
-
-          ./configure/venv/Scripts/python.exe -m pip install pyodbc
-
-          $isql = 'C:/Program Files/Firebird/Firebird_5_0/isql.exe'
-
-          # Initialize SYSDBA password
-          "CREATE OR ALTER USER SYSDBA PASSWORD 'masterkey' USING PLUGIN Srp; EXIT;" | & $isql -b -user SYSDBA security.db
-
-          # Create a test database
-          mkdir C:/tmp > $null
-          "CREATE DATABASE 'localhost:C:/tmp/test.fdb' user 'SYSDBA' password 'masterkey'; EXIT;" | & $isql -b -q
-
-          ./configure/venv/Scripts/python.exe ./resources/scripts/pyodbc_version.py --dbms Firebird --conn-str $env:ODBC_CONN_STRING
 
       - name: Build
         shell: bash
