@@ -35,6 +35,8 @@ TEST_CASE("Params query with a varchar param literal", group_name) {
 		cast = "CAST(? AS VARCHAR2(16)) FROM dual";
 	} else if (DBMSConfigured("DB2")) {
 		cast = "CAST(? AS VARCHAR(16)) FROM sysibm.sysdummy1";
+	} else if (DBMSConfigured("Firebird")) {
+		cast = "CAST(? AS VARCHAR(16)) FROM RDB$DATABASE";
 	} else if (DBMSConfigured("FlightSQL")) {
 		return;
 	}
@@ -101,7 +103,7 @@ SELECT * FROM odbc_query(
 }
 
 TEST_CASE("Params query with multiple params including NULL", group_name) {
-	if (DBMSConfigured("Oracle") || DBMSConfigured("DB2") || DBMSConfigured("FlightSQL")) {
+	if (DBMSConfigured("Oracle") || DBMSConfigured("DB2") || DBMSConfigured("Firebird") || DBMSConfigured("FlightSQL")) {
 		return;
 	}
 	ScannerConn sc;
