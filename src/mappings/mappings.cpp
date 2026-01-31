@@ -21,7 +21,6 @@ std::unordered_map<duckdb_type, std::string> Mappings::Resolve(DbmsDriver driver
 	case DbmsDriver::CLICKHOUSE:
 	case DbmsDriver::FLIGTHSQL:
 	case DbmsDriver::FIREBIRD:
-	case DbmsDriver::POSTGRESQL:
 	default:
 		return Generic(quirks);
 	}
