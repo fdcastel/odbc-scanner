@@ -261,7 +261,13 @@ bool DBMSConfigured(const std::string dbms_name) {
 		return dbms_name == "DuckDB";
 	}
 	std::string str(cstr);
-	std::string needle = std::string("{" + dbms_name + " Driver}");
+	// Firebird uses "Firebird ODBC Driver" as the actual driver name
+	std::string needle;
+	if (dbms_name == "Firebird") {
+		needle = "{Firebird ODBC Driver}";
+	} else {
+		needle = std::string("{" + dbms_name + " Driver}");
+	}
 	return str.find(needle) != std::string::npos;
 }
 
@@ -323,7 +329,12 @@ std::string CastAsDateSQL(const std::string &value_in, const std::string &alias)
 }
 
 std::string CastAsDecimalSQL(const std::string &value, uint8_t precision, uint8_t scale, const std::string &alias) {
-	std::string type_name = "DECIMAL(" + std::to_string(precision) + ", " + std::to_string(scale) + ")";
+	// Firebird has a maximum precision of 18 for DECIMAL
+	uint8_t effective_precision = precision;
+	if (DBMSConfigured("Firebird") && effective_precision > 18) {
+		effective_precision = 18;
+	}
+	std::string type_name = "DECIMAL(" + std::to_string(effective_precision) + ", " + std::to_string(scale) + ")";
 	std::string postfix = "";
 	if (DBMSConfigured("ClickHouse")) {
 		type_name = "Nullable(" + type_name + ")";
