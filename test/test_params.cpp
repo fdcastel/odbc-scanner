@@ -36,7 +36,7 @@ TEST_CASE("Params query with a varchar param literal", group_name) {
 	} else if (DBMSConfigured("DB2")) {
 		cast = "CAST(? AS VARCHAR(16)) FROM sysibm.sysdummy1";
 	} else if (DBMSConfigured("Firebird")) {
-		cast = "CAST(? AS VARCHAR(16)) FROM RDB$DATABASE";
+		cast = "CAST(? AS VARCHAR(16)) FROM RDB$DATABASE;";
 	} else if (DBMSConfigured("FlightSQL")) {
 		return;
 	}
@@ -182,7 +182,7 @@ TEST_CASE("Params query Firebird with multiple params including NULL", group_nam
 SELECT * FROM odbc_query(
   getvariable('conn'),
   '
-    SELECT CAST(? AS BIGINT) AS c1, CAST(? AS BIGINT) AS c2 FROM RDB$DATABASE
+    SELECT CAST(? AS BIGINT) AS c1, CAST(? AS BIGINT) AS c2 FROM RDB$DATABASE;
   ', 
   params=row(NULL, 42))
 )",
