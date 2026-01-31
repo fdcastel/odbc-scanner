@@ -35,6 +35,8 @@ TEST_CASE("Params query with a varchar param literal", group_name) {
 		cast = "CAST(? AS VARCHAR2(16)) FROM dual";
 	} else if (DBMSConfigured("DB2")) {
 		cast = "CAST(? AS VARCHAR(16)) FROM sysibm.sysdummy1";
+	} else if (DBMSConfigured("Firebird")) {
+		cast = "CAST(? AS VARCHAR(16)) FROM RDB$DATABASE";
 	} else if (DBMSConfigured("FlightSQL")) {
 		return;
 	}
@@ -101,7 +103,8 @@ SELECT * FROM odbc_query(
 }
 
 TEST_CASE("Params query with multiple params including NULL", group_name) {
-	if (DBMSConfigured("Oracle") || DBMSConfigured("DB2") || DBMSConfigured("FlightSQL")) {
+	if (DBMSConfigured("Oracle") || DBMSConfigured("DB2") || DBMSConfigured("Firebird") ||
+	    DBMSConfigured("FlightSQL")) {
 		return;
 	}
 	ScannerConn sc;
@@ -158,6 +161,28 @@ SELECT * FROM odbc_query(
   getvariable('conn'),
   '
     SELECT CAST(? AS BIGINT) AS c1, CAST(? AS BIGINT) AS c2 FROM sysibm.sysdummy1
+  ', 
+  params=row(NULL, 42))
+)",
+	                               res.Get());
+	REQUIRE(QuerySuccess(res.Get(), st));
+	REQUIRE(res.NextChunk());
+	REQUIRE(res.IsNull(0, 0));
+	REQUIRE(res.Value<int64_t>(1, 0) == 42);
+}
+
+TEST_CASE("Params query Firebird with multiple params including NULL", group_name) {
+	if (!DBMSConfigured("Firebird")) {
+		return;
+	}
+	ScannerConn sc;
+	Result res;
+	duckdb_state st = duckdb_query(sc.conn,
+	                               R"(
+SELECT * FROM odbc_query(
+  getvariable('conn'),
+  '
+    SELECT CAST(? AS BIGINT) AS c1, CAST(? AS BIGINT) AS c2 FROM RDB$DATABASE
   ', 
   params=row(NULL, 42))
 )",
