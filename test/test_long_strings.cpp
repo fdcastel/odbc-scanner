@@ -70,11 +70,14 @@ SELECT * FROM odbc_query(
 		std::string str = GenStr(i);
 		vec.emplace_back(std::move(str));
 	}
-	for (size_t i = (1 << 14) - 4; i < (1 << 14) + 4; i++) {
-		std::string str = GenStr(i);
-		vec.emplace_back(std::move(str));
+	// Firebird has a VARCHAR max size of 8191, so skip 16384 char strings
+	if (!DBMSConfigured("Firebird")) {
+		for (size_t i = (1 << 14) - 4; i < (1 << 14) + 4; i++) {
+			std::string str = GenStr(i);
+			vec.emplace_back(std::move(str));
+		}
 	}
-	REQUIRE(vec.size() == 40);
+	REQUIRE(vec.size() == (DBMSConfigured("Firebird") ? 32 : 40));
 
 	for (std::string &str : vec) {
 		auto param_val = ValuePtr(duckdb_create_varchar_length(str.c_str(), str.length()), ValueDeleter);
