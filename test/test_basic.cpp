@@ -27,7 +27,9 @@ TEST_CASE("Basic query with multiple rows and columns", group_name) {
 	Result res;
 	std::string query;
 	if (DBMSConfigured("Firebird")) {
-		// Firebird doesn't allow semicolons in UNION ALL subqueries
+		// Firebird doesn't allow semicolons in UNION ALL subqueries.
+		// We hardcode the query here because CastAsBigintSQL adds semicolons
+		// which are invalid within UNION ALL context for Firebird.
 		query = R"(
 SELECT * FROM odbc_query(
 	getvariable('conn'),
