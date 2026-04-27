@@ -14,19 +14,19 @@ SELECT * FROM odbc_query(getvariable('conn'),
 0306C176-E401-11F0-A1AC-E86A6416A6F5
 
 query I
-SELECT * FROM odbc_query(getvariable('conn'), 'SELECT UUID_TO_CHAR(?) FROM rdb$database',
+SELECT * FROM odbc_query(getvariable('conn'), 'SELECT UUID_TO_CHAR(CHAR_TO_UUID(?)) FROM rdb$database',
   params=row('0306c176-e401-11f0-a1ac-e86a6416a6f5'::UUID))
 ----
 0306C176-E401-11F0-A1AC-E86A6416A6F5
 
 query I
-SELECT * FROM odbc_query(getvariable('conn'), 'SELECT UUID_TO_CHAR(?) FROM rdb$database',
+SELECT * FROM odbc_query(getvariable('conn'), 'SELECT UUID_TO_CHAR(CHAR_TO_UUID(?)) FROM rdb$database',
   params=row('00000000-0000-0000-0000-000000000000'::UUID))
 ----
 00000000-0000-0000-0000-000000000000
 
 query I
-SELECT * FROM odbc_query(getvariable('conn'), 'SELECT UUID_TO_CHAR(?) FROM rdb$database',
+SELECT * FROM odbc_query(getvariable('conn'), 'SELECT UUID_TO_CHAR(CHAR_TO_UUID(?)) FROM rdb$database',
   params=row(NULL::UUID))
 ----
 NULL
@@ -35,7 +35,7 @@ statement ok
 SET VARIABLE params1 = odbc_create_params()
 
 statement ok
-PREPARE p1 AS SELECT * FROM odbc_query(getvariable('conn'), 'SELECT UUID_TO_CHAR(?) FROM rdb$database',
+PREPARE p1 AS SELECT * FROM odbc_query(getvariable('conn'), 'SELECT UUID_TO_CHAR(CHAR_TO_UUID(?)) FROM rdb$database',
   params_handle=getvariable('params1'))
 
 statement ok
